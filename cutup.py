@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 import random
 import string
@@ -16,8 +15,7 @@ def cutUp(text):
         selectedWord=random.randrange(0, len(textCopy))
         newText.append(textCopy[selectedWord])
         textCopy.remove(textCopy[selectedWord])
-    print newText
-
+    print ' '.join(newText) 
 cutUp(testText)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
