@@ -3,11 +3,14 @@ import random
 import string
 from sys import argv
 
-script, filename = argv 
-inFile = open(filename, 'r', 0)
+#Takes import and export filename as an argument.
+script, infilename, outfilename = argv 
+inFile = open(infilename, 'r', 0)
+outFile = open(outfilename, 'w')
 cutText = inFile.read()
 
-print "Cutting up %r." % filename
+print "Cutting up %r." % infilename
+print "Exporting to %r." % outfilename
 
 def cutUp(text):
     """
@@ -22,6 +25,8 @@ def cutUp(text):
         newText.append(textCopy[selectedWord])
         textCopy.remove(textCopy[selectedWord])
     print ' '.join(newText) 
+    outFile.write(' '.join(newText))
     inFile.close()
+    outFile.close()
 cutUp(cutText)
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
