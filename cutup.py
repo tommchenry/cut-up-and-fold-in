@@ -6,7 +6,6 @@ from sys import argv
 #Takes import and export filename as an argument.
 script, infilename, outfilename = argv 
 inFile = open(infilename, 'r', 0)
-outFile = open(outfilename, 'w')
 cutText = inFile.read()
 
 def cutUp(text, breakFreq = 20, phraseMax = 3):
@@ -16,15 +15,22 @@ def cutUp(text, breakFreq = 20, phraseMax = 3):
     """
     newText=[]
     textCopy=list(text)
-    for i in range(len(text)):
-        selectedWord=random.randrange(0, len(textCopy))
-        phraseSave = random.randrange(0, phraseMax)
-        if selectedWord + phraseSave < len(textCopy):    
-            for i in range (0,phraseSave):
-                newText.append(textCopy[selectedWord + i])
-                textCopy.remove(textCopy[selectedWord + i])
-        if random.randrange(0, breakFreq) == breakFreq - 1: 
+    try:
+        for i in range(len(text)):
+            selectedWord=random.randrange(0, len(textCopy))
+            phraseSave = random.randrange(0, phraseMax)
+            if selectedWord + phraseSave < len(textCopy) - 1 and phraseSave > 1:    
+                for i in range (0,phraseSave):
+                    newText.append(textCopy[selectedWord + i])
+                for i in range (0, phraseSave):
+                    textCopy.remove(textCopy[selectedWord + i])
+            if random.randrange(0, breakFreq) == breakFreq - 1: 
                 newText.append('\n')
+    except IndexError:
+        print 'Borked!:'
+        print 'i =', i, 'selectedWord =', selectedWord 
+        print 'phraseSave =', phraseSave, 'Remain =', len(textCopy)
+        
     return ' '.join(newText)
 
 def startProg(text):
@@ -34,17 +40,18 @@ def startProg(text):
     '''
     runProg = True
     print 'Text Mangler 0.7'
+    text = text.split()
     while runProg == True: 
-        text = text.split()
+        if isinstance(text, basestring):
+           text = text.split() 
         previewText = ""
         print 'Current Text: %r' % infilename
         print '------------'
-        for i in range (0,30):
+        for i in range (0,50):
             previewText+=text[i] + " "
             if i > 1 and i % 10 == 0:
                 previewText+='\n'
         previewText+= "[MORE]"
-    #print ' '.join(previewText) 
         print previewText
         command = raw_input('(C to perform cut-up, X to exit):>')
         if command == 'X' or command == 'x':
@@ -65,9 +72,10 @@ def startProg(text):
                 print '%r is not a valid integer, substituting 4' % phraseMax
                 phraseMax = 4
             text = cutUp(text, breakFreq, phraseMax)
+            outFile = open(outfilename, 'w')
             outFile.write(text)
+            outFile.close()
     inFile.close()
-    outFile.close()
 
 startProg(cutText)
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
